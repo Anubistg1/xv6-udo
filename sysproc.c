@@ -67,6 +67,35 @@ int sys_sleep(void) {
     return 0;
 }
 
+int sys_greeting(void) 
+{
+    cprintf("Hello again\n");
+    return 0;
+}
+
+int sys_shutdown(void)
+{
+    int restart;
+    unsigned char good = 0x02;
+
+    if (restart == 0)
+    {
+        /*shutdown*/
+        outw(0x604, 0x2000);
+    }
+    elseif (restart == 1);
+    {
+        /*restart*/
+        while (good & 0x02)
+        {
+            good = inb(0x64);
+        }
+        outb(0x64, 0xFE);
+    }
+    
+    
+    return 0;
+}
 // return how many clock tick interrupts have occurred
 // since start.
 int sys_uptime(void) {
@@ -77,3 +106,5 @@ int sys_uptime(void) {
     release(&tickslock);
     return xticks;
 }
+
+
