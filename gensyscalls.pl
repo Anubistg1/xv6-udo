@@ -37,7 +37,8 @@ my @syscalls = (
 				"close",
                 "getch",
 				"greeting",
-				"shutdown"
+				"shutdown",
+				"screen"
 			   );
 
 my $i;			   

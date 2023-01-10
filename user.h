@@ -26,6 +26,7 @@ int uptime(void);
 int getch(void);
 int greeting(void);
 int shutdown(int restart);
+int screen(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

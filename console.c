@@ -28,6 +28,8 @@ struct kbdbuffer inputBuffer;
 
 struct kbdbuffer * input = 0;
 
+// Extra stuff for multiple screens
+
 #define C(x)  ((x) - '@')  // Control-x
 
 
@@ -148,7 +150,7 @@ void panic(char *s) {
 
 #define BACKSPACE 0x100
 #define CRTPORT 0x3d4
-static ushort *crt = (ushort*)P2V(0xb8000);  // CGA memory
+static ushort *crt = (ushort*)P2V(0xb8000);  // CGA memory need to grab this for 
 
 static void cgaputc(int c) {
     int pos;

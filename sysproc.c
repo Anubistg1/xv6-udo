@@ -75,15 +75,16 @@ int sys_greeting(void)
 
 int sys_shutdown(void)
 {
-    int restart;
+    
     unsigned char good = 0x02;
-
-    if (restart == 0)
+    int restart;
+    argint(0, & restart);
+    if (restart == 1)
     {
         /*shutdown*/
         outw(0x604, 0x2000);
     }
-    elseif (restart == 1);
+    else if (restart == 0)
     {
         /*restart*/
         while (good & 0x02)
@@ -92,7 +93,10 @@ int sys_shutdown(void)
         }
         outb(0x64, 0xFE);
     }
-    
+    else
+    {
+        cprintf("Wrong number\n");
+    }
     
     return 0;
 }
@@ -105,6 +109,12 @@ int sys_uptime(void) {
     xticks = ticks;
     release(&tickslock);
     return xticks;
+}
+
+int sys_screen(void)
+{
+    CreateScreen();
+    return 0;
 }
 
 
