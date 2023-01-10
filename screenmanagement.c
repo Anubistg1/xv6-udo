@@ -21,10 +21,10 @@ struct
     struct screenmanagement ScreenNumber[MAXSCREENS];
     
 } ConsoleTable;
-
+struct screenmanagement *Screen;
 struct screenmanagement* ScreenAllocation(void) 
 {
-    struct screenmanagement *Screen;
+    
 
     acquire(&ConsoleTable.ScreenLock);
     for (Screen = ConsoleTable.ScreenNumber; Screen < ConsoleTable.ScreenNumber + MAXSCREENS; Screen++)
@@ -43,12 +43,8 @@ struct screenmanagement* ScreenAllocation(void)
 
 void CreateScreen(void)
 {
-    char *argv[] = { "sh", 0 };
-    cprintf("Here");
-    ScreenAllocation();
-    syscall();
-    consoleinit();
-    exec("sh", argv);      
-    exit();
+
+    ScreenAllocation(); 
+
     
 };

@@ -3,6 +3,7 @@
 int main(int argc, char *argv[])
 {
     int IsChild;
+    char *ChildScreen[] = { "sh", 0 };
     IsChild = fork();
     if (IsChild < 0) {        
         exit();
@@ -11,13 +12,14 @@ int main(int argc, char *argv[])
        // exec("sh", argv);
       //  cprintf("Is Child\n");
         screen();
+        exec("sh", ChildScreen);   
        // syscall();
        // exec("sh", argv);
        // consoleinit();        
-        exit();
     }
     if (IsChild > 0) // Parent
     {
+        
         exit();
     }
 
