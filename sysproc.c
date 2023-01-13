@@ -12,6 +12,7 @@ int sys_fork(void) {
 }
 
 int sys_exit(void) {
+   
     exit();
     return 0;  // not reached
 }
@@ -70,6 +71,8 @@ int sys_sleep(void) {
 int sys_greeting(void) 
 {
     cprintf("Hello again\n");
+    int id = myproc()->ConsoleID;
+    cprintf("%d", id);
     return 0;
 }
 

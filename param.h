@@ -14,3 +14,4 @@
 #define MAXSCREENS   10  // max amount of child screens
 #define SCREEENHEIGHT 80 // character height
 #define SCREENWIDTH   25 // character width
+#define BUFFER        2000 // new buffer

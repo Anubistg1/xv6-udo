@@ -24,6 +24,9 @@ void            cprintf(char*, ...);
 void            consoleintr(int (*)(void));
 int             consoleget(void);
 void            panic(char*) __attribute__((noreturn));
+// My console.c changes
+struct screenmanagement*        ScreenAllocation(void);
+void            CreateScreen(void);
 
 // exec.c
 int             exec(char*, char**);
@@ -189,9 +192,7 @@ void            switchkvm(void);
 int             copyout(pde_t*, uint, void*, uint);
 void            clearpteu(pde_t *pgdir, char *uva);
 
-// screenmanagement.c
-struct screenmanagement*        ScreenAllocation(void);
-void            CreateScreen(void);
+
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x) / sizeof((x)[0]))

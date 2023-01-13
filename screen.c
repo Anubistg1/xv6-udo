@@ -12,14 +12,14 @@ int main(int argc, char *argv[])
        // exec("sh", argv);
       //  cprintf("Is Child\n");
         screen();
-        exec("sh", ChildScreen);   
+        exec("sh", ChildScreen);
+           
        // syscall();
        // exec("sh", argv);
        // consoleinit();        
     }
     if (IsChild > 0) // Parent
     {
-        
         exit();
     }
 
