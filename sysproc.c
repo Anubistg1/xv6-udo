@@ -129,6 +129,7 @@ int sys_screen(void)
         myproc()->ConsoleID = id;
         }
         return 0;
+        CreateScreen();
     }
     exit();
  

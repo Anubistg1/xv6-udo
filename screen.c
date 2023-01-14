@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     }
     if (IsChild > 0) // Parent
     {
-        wait(); // waits for forked children to keep running
+        // wait(); // waits for forked children to keep running
         exit();
     }
 

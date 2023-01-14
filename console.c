@@ -157,15 +157,15 @@ void panic(char *s) {
 
 #define BACKSPACE 0x100
 #define CRTPORT 0x3d4
-
+static int NewScreensStarted = 0;
 
 static void cgaputc(int c) {
     int pos;
-
+   // int CurrentScreen;
     // Cursor position: col + 80*row.
     if ((ConsoleTable.Screen->ScreenCurrentUse == 1)) //Checks if the screen is the one that is supposed to be updating
     {
-        
+        NewScreensStarted = 1;
         
     outb(CRTPORT, 14);
     pos = inb(CRTPORT + 1) << 8;
@@ -204,7 +204,8 @@ static void cgaputc(int c) {
 
     // Virtual buffer
     // Cursor position: col + 80*row.
-    if (ConsoleTable.Screen->ScreenCurrentUse)
+    // If define is wrong
+    if (NewScreensStarted == 0)
     {
     
     int NewPos = ConsoleTable.Screen->CursorPos;
@@ -462,7 +463,31 @@ struct screenmanagement* ScreenAllocation(void)
 
 void CreateScreen(void)
 {
-   // for (int i = 0; i < MAXSCREENS; i++)
+    for (int i = 0; i < (MAXSCREENS - 1); i++)
+    {
+        if (ConsoleTable.Screen[i].ScreenCurrentUse == 1)
+        {
+            if (i != 0)
+            {
+                memmove(crt, ConsoleTable.Screen[i - 1].ScreenBuffer, sizeof(crt[0]) * 23 * 80);
+                memset(ConsoleTable.Screen[i].ScreenBuffer, 0, sizeof(crt[0]) * 23 * 80);
+            }
+            else
+            {
+                memmove(crt, ConsoleTable.Screen[i].ScreenBuffer, sizeof(crt[0]) * 23 * 80);
+            }
+           
+        }
+        
+    }
+    
+
+
+
+
+
+
+   // for (int i = 0; i < MAXSCREENS - 1; i++)
    // {
    //     if ((ConsoleTable.Screen[i].ScreenCurrentUse = 1))
    //     {
@@ -472,7 +497,7 @@ void CreateScreen(void)
         
    // }
     
-   // for (int i = 0; i < MAXSCREENS; i++)
+   // for (int i = 0; i < MAXSCREENS - 1; i++)
    // {
         
    //     if ((ConsoleTable.ScreenNumber[i].ScreenNum = 0) && (ConsoleTable.ScreenNumber[i].ScreenInUse = 0)) // Checks to see if the first screen is alreadly assigned
