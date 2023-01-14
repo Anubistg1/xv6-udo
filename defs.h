@@ -28,6 +28,7 @@ void            panic(char*) __attribute__((noreturn));
 struct screenmanagement*        ScreenAllocation(void);
 void            CreateScreen(void);
 void            ScreenDeallocation(int id);
+int             ScreenAvailablity(void);
 
 // exec.c
 int             exec(char*, char**);

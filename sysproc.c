@@ -116,13 +116,22 @@ int sys_uptime(void) {
 
 int sys_screen(void)
 {
-    CreateScreen();
-    int id = ScreenAllocation()->ScreenNum;
-    if (0 > id && id < MAXSCREENS)
-    {
-        myproc()->ConsoleID = id;
-    }
+    // CreateScreen();
+    // Return Int 1 for do the rest
+    int Available = 0;
+    Available = ScreenAvailablity();
     
+    if (Available == 1)
+    {
+        int id = ScreenAllocation()->ScreenNum;
+        if (0 > id && id < MAXSCREENS)
+        {
+        myproc()->ConsoleID = id;
+        }
+        return 0;
+    }
+    exit();
+ 
     return 0;
 }
 
