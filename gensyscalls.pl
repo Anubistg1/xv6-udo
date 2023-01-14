@@ -38,7 +38,8 @@ my @syscalls = (
                 "getch",
 				"greeting",
 				"shutdown",
-				"screen"
+				"screen",
+				"deallocate"
 			   );
 
 my $i;			   

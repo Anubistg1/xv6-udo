@@ -117,7 +117,22 @@ int sys_uptime(void) {
 int sys_screen(void)
 {
     CreateScreen();
+    int id = ScreenAllocation()->ScreenNum;
+    if (0 > id && id < MAXSCREENS)
+    {
+        myproc()->ConsoleID = id;
+    }
+    
     return 0;
 }
 
-
+int sys_deallocate(void)
+{
+    int id = myproc()->ConsoleID;
+    if (id != 0)
+    {
+        ScreenDeallocation(id);
+    }
+    
+    return 0;
+}

@@ -51,6 +51,14 @@ struct proc {
     int ConsoleID;               // Finds Screen
 };
 
+struct screenmanagement
+{
+    int ScreenNum;
+    ushort ScreenBuffer[BUFFER];
+    int CursorPos;
+    int ScreenInUse; // boolean value 1 or 0
+    int ScreenCurrentUse; // boolean value 1 or 0
+};
 // Process memory is laid out contiguously, low addresses first:
 //   text
 //   original data and bss

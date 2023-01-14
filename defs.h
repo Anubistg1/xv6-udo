@@ -27,6 +27,7 @@ void            panic(char*) __attribute__((noreturn));
 // My console.c changes
 struct screenmanagement*        ScreenAllocation(void);
 void            CreateScreen(void);
+void            ScreenDeallocation(int id);
 
 // exec.c
 int             exec(char*, char**);

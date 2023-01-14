@@ -156,9 +156,12 @@ int main(void) {
     }
 
     // Read and run input commands.
+    
     while (getcmd(buf, sizeof(buf)) >= 0) {
 		if (buf[0] == 'e' && buf[1] == 'x' && buf[2] == 'i' && buf[3] == 't') {
-			exit();
+			// Add sys call close screen using
+            deallocate();
+            exit();
 		}
         if (buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' ') {
             // Chdir must be called by the parent, not the child.

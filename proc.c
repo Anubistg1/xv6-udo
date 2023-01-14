@@ -197,7 +197,7 @@ int fork(void) {
     np->sz = curproc->sz;
     np->parent = curproc;
     *np->tf = *curproc->tf;
-
+    np->ConsoleID = curproc->ConsoleID; //Sets proc to new console
     // Clear %eax so that fork returns 0 in the child.
     np->tf->eax = 0;
 

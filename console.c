@@ -31,14 +31,6 @@ struct kbdbuffer * input = 0;
 // Extra stuff for multiple screens
 static int CurrentScreen;
 
-struct screenmanagement
-{
-    int ScreenNum;
-    ushort ScreenBuffer[BUFFER];
-    int CursorPos;
-    int ScreenInUse; // boolean value 1 or 0
-    int ScreenCurrentUse; // boolean value 1 or 0
-};
 
 struct 
 {
@@ -446,7 +438,6 @@ struct screenmanagement* ScreenAllocation(void)
 
 void CreateScreen(void)
 {
-    ScreenAllocation(); 
     for (int i = 0; i < MAXSCREENS; i++)
     {
         if ((ConsoleTable.ScreenNumber[i].ScreenCurrentUse = 1))
@@ -494,3 +485,12 @@ void CreateScreen(void)
 };
 
 // deallocate
+void ScreenDellocation(int id)
+{
+    ConsoleTable.ScreenNumber[id].ScreenInUse = 0;
+    ConsoleTable.ScreenNumber[id].ScreenCurrentUse = 0;
+    ConsoleTable.ScreenNumber[id].CursorPos = 0;
+   // ConsoleTable.ScreenNumber[id].ScreenBuffer = 0;
+   // return 0;
+
+}

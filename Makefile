@@ -28,6 +28,7 @@ OBJS = \
 	vectors.o\
 	vm.o\
 	screenmanagement.o\
+	
 
 # Cross-compiling (e.g., on Mac OS X)
 # TOOLPREFIX = i386-jos-elf
@@ -199,6 +200,7 @@ UPROGS=\
 	_hello\
 	_shutdown\
 	_screen\
+	_deallocate\
 
 fs.img: mkfs $(UPROGS)
 	./mkfs fs.img $(UPROGS)
