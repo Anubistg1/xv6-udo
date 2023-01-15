@@ -162,11 +162,11 @@ void panic(char *s) {
 static void cgaputc(int c) {
     int pos;
    // int CurrentScreen;
-    // Cursor position: col + 80*row.
+    
     if ((ConsoleTable.Screen->ScreenCurrentUse == 1) || myproc() == 0) //Checks if the screen is the one that isn't and is a process
     {
         
-        
+    // Cursor position: col + 80*row.
     outb(CRTPORT, 14);
     pos = inb(CRTPORT + 1) << 8;
     outb(CRTPORT, 15);
@@ -236,7 +236,7 @@ static void cgaputc(int c) {
         memset(ConsoleTable.Screen->ScreenBuffer + NewPos, 0, sizeof(ConsoleTable.Screen->ScreenBuffer[0]) * (24 * 80 - NewPos));
         ConsoleTable.Screen->CursorPos = NewPos;
     }
-
+    // This has caused double spacing so has been commented out
    // outb(CRTPORT, 14);
    // outb(CRTPORT + 1, NewPos >> 8);
    // outb(CRTPORT, 15);
@@ -390,21 +390,7 @@ void consoleinit(void) {
     ioapicenable(IRQ_KBD, 0);
 }
 
-//struct screenmanagement
-//{
-//    int ScreenNum;
-//    ushort ScreenBuffer[BUFFER];
-//    int CursorPos;
-//    int ScreenInUse; // boolean value 1 or 0
-//    int ScreenCurrentUse; // boolean value 1 or 0
-//};
 
-//struct 
-//{
-//    struct spinlock ScreenLock;
-//    struct screenmanagement ScreenNumber[MAXSCREENS];
-    
-//} ConsoleTable;
 int ScreenAvailablity(void)
 {
     int UsedScreens = 0;
@@ -477,24 +463,7 @@ void CreateScreen(void)
     outb(CRTPORT + 1, pos);
     crt[pos] = ' ' | 0x0700;
     ConsoleTable.Screen->CursorPos = pos;
-  //  for (int i = 0; i < (MAXSCREENS - 1); i++)
-  //  {
-  //      if (ConsoleTable.Screen[i].ScreenCurrentUse == 1)
-  //      {
-  //          if (i != 0)
-  //          {
-  //              memmove(crt, ConsoleTable.Screen[i - 1].ScreenBuffer, sizeof(crt[0]) * 23 * 80);
-  //              memset(ConsoleTable.Screen[i].ScreenBuffer, 0, sizeof(crt[0]) * 23 * 80);
-  //          }
-  //          else
-  //          {
-  //              memmove(crt, ConsoleTable.Screen[i].ScreenBuffer, sizeof(crt[0]) * 23 * 80);
-  //          }
-           
-  //      }
-        
-  //  }
-    
+
     return;
 };
 
@@ -520,6 +489,7 @@ void ScreenDeallocation(int id)
     }
     release(&ConsoleTable.ScreenLock);
     return;
+    // Code that over complicated what I was doing.
     // acquire(&ConsoleTable.ScreenLock);
    // ConsoleTable.Screen[id].ScreenInUse = 0;
     // ConsoleTable.Screen[id].ScreenCurrentUse = 0;
@@ -576,3 +546,26 @@ void ScreenDeallocation(int id)
     
 
 
+    // Initial attempt at handing the buffers
+
+
+  //  for (int i = 0; i < (MAXSCREENS - 1); i++)
+  //  {
+  //      if (ConsoleTable.Screen[i].ScreenCurrentUse == 1)
+  //      {
+  //          if (i != 0)
+  //          {
+  //              memmove(crt, ConsoleTable.Screen[i - 1].ScreenBuffer, sizeof(crt[0]) * 23 * 80);
+  //              memset(ConsoleTable.Screen[i].ScreenBuffer, 0, sizeof(crt[0]) * 23 * 80);
+  //          }
+  //          else
+  //          {
+  //              memmove(crt, ConsoleTable.Screen[i].ScreenBuffer, sizeof(crt[0]) * 23 * 80);
+  //          }
+           
+  //      }
+        
+  //  }
+    
+
+    

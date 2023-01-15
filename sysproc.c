@@ -129,7 +129,7 @@ int sys_screen(void)
         myproc()->ConsoleID = id;
         cprintf("%d", id);
         // CreateScreen();
-        
+        // Commented out in attempt to find out why int id = myproc()->ConsoleID; is causing problems
         }
         return 0;
         
@@ -146,7 +146,7 @@ int sys_screen(void)
 
 int sys_deallocate(void)
 {
-    int id = myproc()->ConsoleID;
+    int id = myproc()->ConsoleID; // Something wrong with myproc meaning the id is not kept after being assigned.
      cprintf("%d", id);
     if (id != 0)
     {

@@ -24,6 +24,7 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int getch(void);
+// Added by me
 int greeting(void);
 int shutdown(int restart);
 int screen(void);
