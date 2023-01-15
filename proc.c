@@ -124,6 +124,7 @@ void userinit(void) {
     p = allocproc();
 
     initproc = p;
+   
     if ((p->pgdir = setupkvm()) == 0) {
         panic("userinit: out of memory?");
     }
@@ -148,7 +149,7 @@ void userinit(void) {
     acquire(&ptable.lock);
 
     p->state = RUNNABLE;
-
+    ScreenAllocation();
     release(&ptable.lock);
 }
 

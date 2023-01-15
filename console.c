@@ -157,15 +157,15 @@ void panic(char *s) {
 
 #define BACKSPACE 0x100
 #define CRTPORT 0x3d4
-static int NewScreensStarted = 0;
+
 
 static void cgaputc(int c) {
     int pos;
    // int CurrentScreen;
     // Cursor position: col + 80*row.
-    if ((ConsoleTable.Screen->ScreenCurrentUse == 1)) //Checks if the screen is the one that is supposed to be updating
+    if ((ConsoleTable.Screen->ScreenCurrentUse == 1) || myproc() == 0) //Checks if the screen is the one that isn't and is a process
     {
-        NewScreensStarted = 1;
+        
         
     outb(CRTPORT, 14);
     pos = inb(CRTPORT + 1) << 8;
@@ -205,7 +205,7 @@ static void cgaputc(int c) {
     // Virtual buffer
     // Cursor position: col + 80*row.
     // If define is wrong
-    if (NewScreensStarted == 0)
+    if ((ConsoleTable.Screen->ScreenCurrentUse == 1) && myproc() != 0) //Writes when is a process
     {
     
     int NewPos = ConsoleTable.Screen->CursorPos;
@@ -234,6 +234,7 @@ static void cgaputc(int c) {
         memmove(ConsoleTable.Screen->ScreenBuffer, ConsoleTable.Screen->ScreenBuffer + 80, sizeof(ConsoleTable.Screen->ScreenBuffer[0]) * 23 * 80);
         NewPos -= 80;
         memset(ConsoleTable.Screen->ScreenBuffer + NewPos, 0, sizeof(ConsoleTable.Screen->ScreenBuffer[0]) * (24 * 80 - NewPos));
+        ConsoleTable.Screen->CursorPos = NewPos;
     }
 
    // outb(CRTPORT, 14);
@@ -241,6 +242,7 @@ static void cgaputc(int c) {
    // outb(CRTPORT, 15);
     // outb(CRTPORT + 1, NewPos);
    // ConsoleTable.ScreenNumber->ScreenBuffer[NewPos] = ' ' | 0x0700;
+   
     }
 
 
@@ -441,17 +443,18 @@ struct screenmanagement* ScreenAllocation(void)
             TempScreen->ScreenInUse = 1;
             TempScreen->ScreenCurrentUse = 1;
             TempScreen->ScreenNum = SetID;
-            release(&ConsoleTable.ScreenLock);
-             int CurrentScreen = SetID;
-             struct proc* CurrentProc = myproc();
-             CurrentProc->ConsoleID = CurrentScreen;
+            
+            // int CurrentScreen = SetID;
+           //  struct proc* CurrentProc = myproc();
+           //  CurrentProc->ConsoleID = CurrentScreen;
             // cprintf("Child Process\n");
-             int id = myproc()->ConsoleID;
-             cprintf("%d", id);
-             cprintf("%d", CurrentScreen);
+           //  int id = myproc()->ConsoleID;
+           //  cprintf("%d", id);
+           //  cprintf("%d", CurrentScreen);
             // ConsoleTable.ScreenNumber[id].ScreenInUse = 1;
             // ConsoleTable.ScreenNumber[id].ScreenCurrentUse = 1;
             // got child ID
+            release(&ConsoleTable.ScreenLock);
             return TempScreen;
         }
         SetID++;
@@ -463,30 +466,71 @@ struct screenmanagement* ScreenAllocation(void)
 
 void CreateScreen(void)
 {
-    for (int i = 0; i < (MAXSCREENS - 1); i++)
-    {
-        if (ConsoleTable.Screen[i].ScreenCurrentUse == 1)
-        {
-            if (i != 0)
-            {
-                memmove(crt, ConsoleTable.Screen[i - 1].ScreenBuffer, sizeof(crt[0]) * 23 * 80);
-                memset(ConsoleTable.Screen[i].ScreenBuffer, 0, sizeof(crt[0]) * 23 * 80);
-            }
-            else
-            {
-                memmove(crt, ConsoleTable.Screen[i].ScreenBuffer, sizeof(crt[0]) * 23 * 80);
-            }
-           
-        }
-        
-    }
+    int pos = 0;
+    memset(ConsoleTable.Screen->ScreenBuffer, 0x00, sizeof(crt[0]) * 23 * 80);
+    memmove(&crt, ConsoleTable.Screen->ScreenBuffer, sizeof(crt[0]) * 23 * 80); // moves crt to screen buffer
     
+    // sorts cursor position
+    outb(CRTPORT, 14);
+    outb(CRTPORT + 1, pos >> 8);
+    outb(CRTPORT, 15);
+    outb(CRTPORT + 1, pos);
+    crt[pos] = ' ' | 0x0700;
+    ConsoleTable.Screen->CursorPos = pos;
+  //  for (int i = 0; i < (MAXSCREENS - 1); i++)
+  //  {
+  //      if (ConsoleTable.Screen[i].ScreenCurrentUse == 1)
+  //      {
+  //          if (i != 0)
+  //          {
+  //              memmove(crt, ConsoleTable.Screen[i - 1].ScreenBuffer, sizeof(crt[0]) * 23 * 80);
+  //              memset(ConsoleTable.Screen[i].ScreenBuffer, 0, sizeof(crt[0]) * 23 * 80);
+  //          }
+  //          else
+  //          {
+  //              memmove(crt, ConsoleTable.Screen[i].ScreenBuffer, sizeof(crt[0]) * 23 * 80);
+  //          }
+           
+  //      }
+        
+  //  }
+    
+    return;
+};
 
+// deallocate
+void ScreenDeallocation(int id)
+{
+    struct screenmanagement  *TempScreen;
+    TempScreen = ConsoleTable.Screen;
+    acquire(&ConsoleTable.ScreenLock);
+    if (TempScreen->ScreenNum != 0)
+    {
 
+        if (TempScreen->ScreenCurrentUse == 1)
+        {
+            TempScreen->ScreenInUse = 0;
+            TempScreen->ScreenCurrentUse = 0;
+            TempScreen->ScreenNum = id;
+            
 
+            release(&ConsoleTable.ScreenLock);
+            return;
+        } 
+    }
+    release(&ConsoleTable.ScreenLock);
+    return;
+    // acquire(&ConsoleTable.ScreenLock);
+   // ConsoleTable.Screen[id].ScreenInUse = 0;
+    // ConsoleTable.Screen[id].ScreenCurrentUse = 0;
+   // ConsoleTable.Screen[id].CursorPos = 0;
+   // release(&ConsoleTable.ScreenLock);
+   // ConsoleTable.ScreenNumber[id].ScreenBuffer = 0;
+   //return 0;
+    
+}
 
-
-
+// previous attempt at allocation
    // for (int i = 0; i < MAXSCREENS - 1; i++)
    // {
    //     if ((ConsoleTable.Screen[i].ScreenCurrentUse = 1))
@@ -530,18 +574,5 @@ void CreateScreen(void)
         
    // }
     
-    return;
-};
 
-// deallocate
-void ScreenDeallocation(int id)
-{
-    acquire(&ConsoleTable.ScreenLock);
-    ConsoleTable.Screen[id].ScreenInUse = 0;
-    ConsoleTable.Screen[id].ScreenCurrentUse = 0;
-    ConsoleTable.Screen[id].CursorPos = 0;
-    release(&ConsoleTable.ScreenLock);
-   // ConsoleTable.ScreenNumber[id].ScreenBuffer = 0;
-   //return 0;
-    
-}
+

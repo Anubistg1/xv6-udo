@@ -4,9 +4,6 @@ int main(int argc, char *argv[])
 {
     int IsChild;
     IsChild = fork();
-    if (IsChild < 0) {        
-        exit();
-    }
     if (IsChild == 0) { // Child
        // exec("sh", argv);
       //  cprintf("Is Child\n");
@@ -20,7 +17,7 @@ int main(int argc, char *argv[])
     }
     if (IsChild > 0) // Parent
     {
-        // wait(); // waits for forked children to keep running
+       // wait(); // waits for forked children to keep running
         exit();
     }
 

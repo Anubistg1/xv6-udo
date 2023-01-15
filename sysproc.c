@@ -127,11 +127,19 @@ int sys_screen(void)
         if (0 > id && id < MAXSCREENS)
         {
         myproc()->ConsoleID = id;
+        cprintf("%d", id);
+        // CreateScreen();
+        
         }
         return 0;
-        CreateScreen();
+        
     }
-    exit();
+    if (Available != 1)
+    {
+        exit();
+    }
+    
+    
  
     return 0;
 }
@@ -139,10 +147,15 @@ int sys_screen(void)
 int sys_deallocate(void)
 {
     int id = myproc()->ConsoleID;
+     cprintf("%d", id);
     if (id != 0)
     {
         ScreenDeallocation(id);
+        cprintf("%d", id);
     }
     
     return 0;
 }
+
+
+
